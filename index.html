@@ -28,8 +28,6 @@
 
         function onAPILoaded() {
             console.log("onAPILoaded");
-            postMessage('ready');
-            console.log(YT);
 
             YT.ready(function() {
                 player = new YT.Player('player', {
@@ -55,11 +53,12 @@
                         onStateChange: onVideoStateChange
                     }
                 });
-            });
 
-            player.loadVideoById({
-                videoId: 'DotnJ7tTA34',
-                startSeconds: 0
+                postMessage('ready');
+                player.loadVideoById({
+                    videoId: 'DotnJ7tTA34',
+                    startSeconds: 0
+                });
             });
         }
 
