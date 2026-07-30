@@ -3,18 +3,21 @@
     <body></body>
 
     <script>
-        function onAPILoaded() {
-            console.log("Load");
+        function postMessage(name, options) {
             window.parent.postMessage(JSON.stringify({
-                name: 'ready',
-            }));
+                name,
+                options,
+            }), '*');
+        }
+
+        function onAPILoaded() {
+            console.log("onAPILoaded");
+            postMessage('ready');
         }
 
         function onAPIError(e) {
-            console.error("Error", e);
-             window.parent.postMessage(JSON.stringify({
-                name: 'error',
-            }));
+            console.error("onAPIError", e);
+            postMessage('error');
         }
 
         var apiScriptElement = document.createElement('script');
