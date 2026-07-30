@@ -5,7 +5,12 @@
     </body>
 
     <script>
+        var player;
+
         function postMessage(name, options) {
+            console.log(window.parent);
+            console.log(window.self);
+            
             if (window.parent != window.self) {
                 window.parent.postMessage(JSON.stringify({
                     name,
@@ -29,7 +34,7 @@
                     return;
                 }
 
-                var video = new YT.Player('player', {
+                player = new YT.Player('player', {
                     width: '100%',
                     height: '100%',
                     playerVars: {
