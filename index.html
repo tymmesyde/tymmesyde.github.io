@@ -1,18 +1,58 @@
 <!DOCTYPE html>
 <html>
-    <body></body>
+    <body>
+        <div id="player"></div>
+    </body>
 
     <script>
         function postMessage(name, options) {
-            window.parent.postMessage(JSON.stringify({
-                name,
-                options,
-            }), '*');
+            if (window.parent != window.self) {
+                window.parent.postMessage(JSON.stringify({
+                    name,
+                    options,
+                }), '*');
+            }
         }
 
         function onAPILoaded() {
             console.log("onAPILoaded");
             postMessage('ready');
+
+            if (!YT || typeof YT.ready !== 'function') {
+                onAPIError();
+                return;
+            }
+
+            YT.ready(function() {
+                if (!YT || !YT.PlayerState || typeof YT.Player !== 'function') {
+                    onAPIError();
+                    return;
+                }
+
+                var video = new YT.Player('player', {
+                    width: '100%',
+                    height: '100%',
+                    playerVars: {
+                        autoplay: 1,
+                        cc_load_policy: 3,
+                        controls: 0,
+                        disablekb: 1,
+                        enablejsapi: 1,
+                        fs: 0,
+                        iv_load_policy: 3,
+                        loop: 0,
+                        modestbranding: 1,
+                        playsinline: 1,
+                        rel: 0
+                    },
+                    events: {
+                        onError: onVideoError,
+                        onReady: onVideoReady,
+                        onApiChange: onVideoAPIChange,
+                        onStateChange: onVideoStateChange
+                    }
+                });
+            });
         }
 
         function onAPIError(e) {
