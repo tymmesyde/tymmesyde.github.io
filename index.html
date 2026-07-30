@@ -26,6 +26,43 @@
             console.error("onVideoError", e);
         }
 
+        function onVideoAPIChange() {
+            if (typeof video.loadModule === 'function') {
+                video.loadModule('captions');
+            }
+            if (typeof video.setOption === 'function') {
+                video.setOption('captions', 'track', {});
+            }
+            postMessage('propChanged', 'paused');
+            postMessage('propChanged', 'time');
+            postMessage('propChanged', 'duration');
+            postMessage('propChanged', 'buffering');
+            postMessage('propChanged', 'volume');
+            postMessage('propChanged', 'muted');
+            postMessage('propChanged', 'playbackSpeed');
+            postMessage('propChanged', 'subtitlesTracks');
+            postMessage('propChanged', 'selectedSubtitlesTrackId');
+        }
+    
+        function onVideoStateChange(state) {
+            postMessage('propChanged', 'buffering');
+            switch (state.data) {
+                case YT.PlayerState.ENDED: {
+                    onEnded();
+                    break;
+                }
+                case YT.PlayerState.CUED:
+                case YT.PlayerState.UNSTARTED:
+                case YT.PlayerState.PAUSED:
+                case YT.PlayerState.PLAYING: {
+                    postMessage('propChanged', 'paused');
+                    postMessage('propChanged', 'time');
+                    postMessage('propChanged', 'buffering');
+                    break;
+                }
+            }
+        }
+
         function onAPILoaded() {
             console.log("onAPILoaded");
 
