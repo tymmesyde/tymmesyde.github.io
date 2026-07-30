@@ -23,17 +23,23 @@
             }
         }
 
-        function onVideoReady() {
-            console.log("onVideoReady");
+        function onReady() {
+            console.log("onReady");
             postMessage('ready');
-           
+         
+            player.loadVideoById({
+                videoId: 'DotnJ7tTA34',
+                startSeconds: 0
+            });
         }
 
-        function onVideoError(e) {
-            console.error("onVideoError", e);
+        function onError(e) {
+            console.error("onError", e);
         }
 
-        function onVideoAPIChange() {
+        function onApiChange() {
+            console.log('onApiChange');
+            
             player.loadModule('captions');
             player.setOption('captions', 'track', {});
             postMessage('propChanged', 'paused');
@@ -47,7 +53,9 @@
             postMessage('propChanged', 'selectedSubtitlesTrackId');
         }
     
-        function onVideoStateChange(state) {
+        function onStateChange(state) {
+            console.log('onStateChange');
+
             postMessage('propChanged', 'buffering');
             switch (state.data) {
                 case YT.PlayerState.ENDED: {
@@ -86,10 +94,10 @@
                     rel: 0
                 },
                 events: {
-                    onError: onVideoError,
-                    onReady: onVideoReady,
-                    onApiChange: onVideoAPIChange,
-                    onStateChange: onVideoStateChange
+                    onError: onError,
+                    onReady: onReady,
+                    onApiChange: onApiChange,
+                    onStateChange: onStateChange
                 }
             });
         }
