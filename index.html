@@ -1,23 +1,38 @@
 <!DOCTYPE html>
 <html>
-    <body>
-
-    </body>
+    <body></body>
 
     <script>
-        function onLoad() {
+        function onAPILoaded() {
             console.log("Load");
+            window.parent.postMessage(JSON.stringify({
+                name: 'ready',
+            }));
         }
 
-        function onError(e) {
+        function onAPIError(e) {
             console.error("Error", e);
+             window.parent.postMessage(JSON.stringify({
+                name: 'error',
+            }));
         }
+
+        var apiScriptElement = document.createElement('script');
+        apiScriptElement.type = 'text/javascript';
+        apiScriptElement.src = 'https://www.youtube.com/iframe_api';
+        apiScriptElement.onload = onAPILoaded;
+        apiScriptElement.onerror = onAPIError;
+        document.body.appendChild(apiScriptElement);
 
         window.addEventListener("message", (event) => {
             console.log(event);
+            
+            try {
+                var message = JSON.parse(event.data);
+                console.log(message);
+            } catch (e) {
+                console.error('Failed to parse message', e)
+            }
         });
-    </script>
-
-    <script type="text/javascript" src="https://www.youtube.com/iframe_api" onload="onLoad" onerror="onError">
     </script>
 </html>
