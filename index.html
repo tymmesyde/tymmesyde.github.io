@@ -8,13 +8,14 @@
         html, body {
             height: 100%;
             width: 100%;
+            background-color: black;
         }
     </style>
 
     <script>
         var player;
 
-        function postMessage(name, options = {}) {
+        function sendAction(name, options = {}) {
             if (window.parent != window.self) {
                 window.parent.postMessage(JSON.stringify({
                     name,
@@ -25,12 +26,7 @@
 
         function onReady() {
             console.log("onReady");
-            postMessage('ready');
-         
-            player.loadVideoById({
-                videoId: 'DotnJ7tTA34',
-                startSeconds: 0
-            });
+            sendAction('ready');
         }
 
         function onError(e) {
@@ -42,21 +38,21 @@
             
             player.loadModule('captions');
             player.setOption('captions', 'track', {});
-            postMessage('propChanged', 'paused');
-            postMessage('propChanged', 'time');
-            postMessage('propChanged', 'duration');
-            postMessage('propChanged', 'buffering');
-            postMessage('propChanged', 'volume');
-            postMessage('propChanged', 'muted');
-            postMessage('propChanged', 'playbackSpeed');
-            postMessage('propChanged', 'subtitlesTracks');
-            postMessage('propChanged', 'selectedSubtitlesTrackId');
+            sendAction('propChanged', 'paused');
+            sendAction('propChanged', 'time');
+            sendAction('propChanged', 'duration');
+            sendAction('propChanged', 'buffering');
+            sendAction('propChanged', 'volume');
+            sendAction('propChanged', 'muted');
+            sendAction('propChanged', 'playbackSpeed');
+            sendAction('propChanged', 'subtitlesTracks');
+            sendAction('propChanged', 'selectedSubtitlesTrackId');
         }
     
         function onStateChange(state) {
             console.log('onStateChange');
 
-            postMessage('propChanged', 'buffering');
+            sendAction('propChanged', 'buffering');
             switch (state.data) {
                 case YT.PlayerState.ENDED: {
                     onEnded();
@@ -66,9 +62,9 @@
                 case YT.PlayerState.UNSTARTED:
                 case YT.PlayerState.PAUSED:
                 case YT.PlayerState.PLAYING: {
-                    postMessage('propChanged', 'paused');
-                    postMessage('propChanged', 'time');
-                    postMessage('propChanged', 'buffering');
+                    sendAction('propChanged', 'paused');
+                    sendAction('propChanged', 'time');
+                    sendAction('propChanged', 'buffering');
                     break;
                 }
             }
@@ -108,7 +104,7 @@
 
         function onAPIError(e) {
             console.error("onAPIError", e);
-            postMessage('error');
+            sendAction('error');
         }
 
         var apiScriptElement = document.createElement('script');
