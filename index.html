@@ -19,10 +19,7 @@
         function onVideoReady() {
             console.log("onVideoReady");
             postMessage('ready');
-            video.loadVideoById({
-                videoId: 'DotnJ7tTA34',
-                startSeconds: 0
-            });
+           
         }
 
         function onVideoError(e) {
@@ -31,6 +28,7 @@
 
         function onAPILoaded() {
             console.log("onAPILoaded");
+            postMessage('ready');
             console.log(YT);
 
             YT.ready(function() {
@@ -57,6 +55,11 @@
                         onStateChange: onVideoStateChange
                     }
                 });
+            });
+
+            player.loadVideoById({
+                videoId: 'DotnJ7tTA34',
+                startSeconds: 0
             });
         }
 
