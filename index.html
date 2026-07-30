@@ -27,12 +27,8 @@
         }
 
         function onVideoAPIChange() {
-            if (typeof video.loadModule === 'function') {
-                video.loadModule('captions');
-            }
-            if (typeof video.setOption === 'function') {
-                video.setOption('captions', 'track', {});
-            }
+            player.loadModule('captions');
+            player.setOption('captions', 'track', {});
             postMessage('propChanged', 'paused');
             postMessage('propChanged', 'time');
             postMessage('propChanged', 'duration');
@@ -63,9 +59,9 @@
             }
         }
 
-        function onAPILoaded() {
-            console.log("onAPILoaded");
-
+        function onYouTubeIframeAPIReady() {
+            console.log('onYouTubeIframeAPIReady');
+            
             player = new YT.Player('player', {
                 width: '100%',
                 height: '100%',
@@ -95,6 +91,10 @@
                 videoId: 'DotnJ7tTA34',
                 startSeconds: 0
             });
+        }
+
+        function onAPILoaded() {
+            console.log("onAPILoaded");
         }
 
         function onAPIError(e) {
