@@ -8,9 +8,6 @@
         var player;
 
         function postMessage(name, options) {
-            console.log(window.parent);
-            console.log(window.self);
-            
             if (window.parent != window.self) {
                 window.parent.postMessage(JSON.stringify({
                     name,
@@ -78,6 +75,28 @@
             try {
                 var message = JSON.parse(event.data);
                 console.log(message);
+
+                if (message.name === 'loadVideoById') {
+                    player.loadVideoById({
+                        videoId: message.options.videoId,
+                        startSeconds: message.options.startSeconds,
+                    });
+                }
+
+                if (message.name === 'cueVideoById') {
+                    player.cueVideoById({
+                        videoId: message.options.videoId,
+                        startSeconds: message.options.startSeconds,
+                    });
+                }
+
+                if (message.name === 'stopVideo') {
+                    player.stopVideo();
+                }
+
+                if (message.name === 'destroy') {
+                    player.destroy();
+                }
             } catch (e) {
                 console.error('Failed to parse message', e)
             }
