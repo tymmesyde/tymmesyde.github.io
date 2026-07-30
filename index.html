@@ -1,1 +1,23 @@
-Test
+<!DOCTYPE html>
+<html>
+    <body>
+
+    </body>
+
+    <script>
+        function onLoad() {
+            console.log("Load");
+        }
+
+        function onError(e) {
+            console.error("Error", e);
+        }
+
+        window.addEventListener("message", (event) => {
+            console.log(event);
+        });
+    </script>
+
+    <script type="text/javascript" src="https://www.youtube.com/iframe_api" onload="onLoad" onerror="onError">
+    </script>
+</html>
