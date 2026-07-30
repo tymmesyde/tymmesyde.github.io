@@ -16,9 +16,20 @@
             }
         }
 
+        function onVideoReady() {
+            console.log("onVideoReady");
+            video.loadVideoById({
+                videoId: 'DotnJ7tTA34',
+                startSeconds: 0
+            });
+        }
+
+        function onVideoError(e) {
+            console.error("onVideoError", e);
+        }
+
         function onAPILoaded() {
             console.log("onAPILoaded");
-            postMessage('ready');
 
             if (!YT || typeof YT.ready !== 'function') {
                 onAPIError();
@@ -54,6 +65,8 @@
                         onStateChange: onVideoStateChange
                     }
                 });
+
+                postMessage('ready');
             });
         }
 
@@ -70,6 +83,7 @@
         document.body.appendChild(apiScriptElement);
 
         window.addEventListener("message", (event) => {
+            console.log('CHILD');
             console.log(event);
             
             try {
