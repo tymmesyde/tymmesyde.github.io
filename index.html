@@ -4,6 +4,13 @@
         <div id="player"></div>
     </body>
 
+    <style type="text/css">
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
     <script>
         var player;
 
@@ -84,12 +91,6 @@
                     onApiChange: onVideoAPIChange,
                     onStateChange: onVideoStateChange
                 }
-            });
-
-            postMessage('ready');
-            player.loadVideoById({
-                videoId: 'DotnJ7tTA34',
-                startSeconds: 0
             });
         }
 
