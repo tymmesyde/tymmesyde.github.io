@@ -29,36 +29,34 @@
         function onAPILoaded() {
             console.log("onAPILoaded");
 
-            YT.ready(function() {
-                player = new YT.Player('player', {
-                    width: '100%',
-                    height: '100%',
-                    playerVars: {
-                        autoplay: 1,
-                        cc_load_policy: 3,
-                        controls: 0,
-                        disablekb: 1,
-                        enablejsapi: 1,
-                        fs: 0,
-                        iv_load_policy: 3,
-                        loop: 0,
-                        modestbranding: 1,
-                        playsinline: 1,
-                        rel: 0
-                    },
-                    events: {
-                        onError: onVideoError,
-                        onReady: onVideoReady,
-                        onApiChange: onVideoAPIChange,
-                        onStateChange: onVideoStateChange
-                    }
-                });
+            player = new YT.Player('player', {
+                width: '100%',
+                height: '100%',
+                playerVars: {
+                    autoplay: 1,
+                    cc_load_policy: 3,
+                    controls: 0,
+                    disablekb: 1,
+                    enablejsapi: 1,
+                    fs: 0,
+                    iv_load_policy: 3,
+                    loop: 0,
+                    modestbranding: 1,
+                    playsinline: 1,
+                    rel: 0
+                },
+                events: {
+                    onError: onVideoError,
+                    onReady: onVideoReady,
+                    onApiChange: onVideoAPIChange,
+                    onStateChange: onVideoStateChange
+                }
+            });
 
-                postMessage('ready');
-                player.loadVideoById({
-                    videoId: 'DotnJ7tTA34',
-                    startSeconds: 0
-                });
+            postMessage('ready');
+            player.loadVideoById({
+                videoId: 'DotnJ7tTA34',
+                startSeconds: 0
             });
         }
 
