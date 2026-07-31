@@ -51,8 +51,8 @@
             var captions = player.getOption('captions', 'tracklist') || [];
             var textTracks = captions.map((caption) => {
                 return {
-                    languageCode: track.languageCode,
-                    displayName: track.displayName,
+                    languageCode: caption.languageCode,
+                    displayName: caption.displayName,
                 };
             });
 
