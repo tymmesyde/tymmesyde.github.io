@@ -64,11 +64,14 @@
                 case YT.PlayerState.CUED:
                 case YT.PlayerState.PAUSED:
                 case YT.PlayerState.PLAYING: {
+                    var paused = state.data !== YT.PlayerState.PLAYING;
+                    !paused ? startPollingTime() : stopPollingTime();
+
                     var duration = player.getDuration();
                     sendEvent('duration', parseInt(duration * 1000));
 
                     sendEvent('buffering', false);
-                    sendEvent('paused', state.data !== YT.PlayerState.PLAYING);
+                    sendEvent('paused', paused);
                     break;
                 }
             }
@@ -143,12 +146,10 @@
 
             if (name === 'pauseVideo') {
                 player.pauseVideo();
-                stopPollingTime();
             }
 
             if (name === 'playVideo') {
                 player.playVideo();
-                startPollingTime();
             }
 
             if (name === 'seekTo') {
