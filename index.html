@@ -8,11 +8,13 @@
         html, body {
             height: 100%;
             width: 100%;
+            margin: 0;
             background-color: black;
         }
     </style>
 
     <script>
+        var YOUTUBE_ORIGIN = 'https://www.youtube.com';
         var player;
 
         function onReady() {
@@ -151,9 +153,10 @@
         }
 
         window.addEventListener("message", (event) => {
+            if (event.origin === YOUTUBE_ORIGIN) return;
             console.log('CHILD');
             console.log(event);
-            
+
             try {
                 var message = JSON.parse(event.data);
                 onMessage(message);
