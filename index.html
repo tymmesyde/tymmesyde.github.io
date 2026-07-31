@@ -36,6 +36,9 @@
         function onReady() {
             console.log("onReady");
             sendEvent('ready');
+
+            var ok = player.getOption('captions', 'tracklist');
+            console.log(ok);
         }
 
         function onError(e) {
@@ -47,6 +50,9 @@
             
             player.loadModule('captions');
             player.setOption('captions', 'track', {});
+
+            var ok = player.getOption('captions', 'tracklist');
+            console.log(ok);
         }
     
         function onStateChange(state) {
@@ -188,8 +194,6 @@
 
         window.addEventListener("message", (event) => {
             if (event.origin === YOUTUBE_ORIGIN) return;
-            console.log('CHILD');
-            console.log(event);
 
             try {
                 var message = JSON.parse(event.data);
