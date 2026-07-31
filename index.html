@@ -58,12 +58,17 @@
             });
 
             sendEvent('textTracks', textTracks);
+
+            var qualities = player.getAvailableQualityLevels();
+            console.log(qualities);
+            
+            player.setPlaybackQuality('hd1080');
         }
     
-        function onStateChange(state) {
+        function onStateChange(event) {
             console.log('onStateChange');
 
-            switch (state.data) {
+            switch (event.data) {
                 case YT.PlayerState.ENDED: {
                     sendEvent('ended');
                     break;
@@ -75,7 +80,7 @@
                 case YT.PlayerState.CUED:
                 case YT.PlayerState.PAUSED:
                 case YT.PlayerState.PLAYING: {
-                    var paused = state.data !== YT.PlayerState.PLAYING;
+                    var paused = event.data !== YT.PlayerState.PLAYING;
                     !paused ? startPollingTime() : stopPollingTime();
 
                     var duration = player.getDuration();
@@ -88,10 +93,14 @@
             }
         }
 
-        function onPlaybackRateChange(state) {
+        function onPlaybackRateChange(event) {
             console.log('onPlaybackRateChange');
-            var rate = player.getPlaybackRate();
-            sendEvent('playbackRate', rate);
+            sendEvent('playbackRate', event.data);
+        }
+
+        function onPlaybackQualityChange(event) {
+            console.log('onPlaybackQualityChange');
+            console.log(event);
         }
 
         function onYouTubeIframeAPIReady() {
@@ -119,6 +128,7 @@
                     onApiChange: onApiChange,
                     onStateChange: onStateChange,
                     onPlaybackRateChange: onPlaybackRateChange,
+                    onPlaybackQualityChange: onPlaybackQualityChange,
                 }
             });
         }
@@ -141,7 +151,7 @@
                 var videoId = args[0];
                 var startSeconds = args[1];
                 player.loadVideoById({
-                    videoId: 'asdasdasdasdasd',
+                    videoId: videoId,
                     startSeconds: startSeconds,
                 });
             }
@@ -150,7 +160,7 @@
                 var videoId = args[0];
                 var startSeconds = args[1];
                 player.cueVideoById({
-                    videoId: 'asdasdasdasdas',
+                    videoId: videoId,
                     startSeconds: startSeconds,
                 });
             }
