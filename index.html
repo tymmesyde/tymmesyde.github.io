@@ -16,6 +16,22 @@
     <script>
         var YOUTUBE_ORIGIN = 'https://www.youtube.com';
         var player;
+        var timeIntervalId;
+
+        function startPollingTime() {
+            clearInterval(timeIntervalId);
+            timeIntervalId = window.setInterval(function() {
+                if (!player) return;
+
+                var time = player.getCurrentTime();
+                sendEvent('time', time);
+            }, 500);
+        }
+
+        function stopPollingTime() {
+            clearInterval(timeIntervalId);
+            timeIntervalId = null;
+        }
 
         function onReady() {
             console.log("onReady");
@@ -31,7 +47,6 @@
             
             player.loadModule('captions');
             player.setOption('captions', 'track', {});
-            sendEvent('apiChanged');
         }
     
         function onStateChange(state) {
@@ -49,6 +64,9 @@
                 case YT.PlayerState.CUED:
                 case YT.PlayerState.PAUSED:
                 case YT.PlayerState.PLAYING: {
+                    var duration = player.getDuration();
+                    sendEvent('duration', duration);
+
                     sendEvent('buffering', false);
                     sendEvent('paused', state.data !== YT.PlayerState.PLAYING);
                     break;
@@ -125,10 +143,12 @@
 
             if (name === 'pauseVideo') {
                 player.pauseVideo();
+                stopPollingTime();
             }
 
             if (name === 'playVideo') {
                 player.playVideo();
+                startPollingTime();
             }
 
             if (name === 'seekTo') {
@@ -156,10 +176,12 @@
 
             if (name === 'stopVideo') {
                 player.stopVideo();
+                stopPollingTime();
             }
 
             if (name === 'destroy') {
                 player.destroy();
+                stopPollingTime();
             }
         }
 
