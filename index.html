@@ -42,14 +42,24 @@
                     sendEvent('ended');
                     break;
                 }
+                case YT.PlayerState.BUFFERING: {
+                    sendEvent('buffering', true);
+                    break;
+                }
                 case YT.PlayerState.CUED:
-                case YT.PlayerState.UNSTARTED:
                 case YT.PlayerState.PAUSED:
                 case YT.PlayerState.PLAYING: {
-                    sendEvent('stateChanged');
+                    sendEvent('buffering', false);
+                    sendEvent('paused', state.data !== YT.PlayerState.PLAYING);
                     break;
                 }
             }
+        }
+
+        function onPlaybackRateChange(state) {
+            console.log('onPlaybackRateChange');
+            var rate = player.getPlaybackRate();
+            sendEvent('playbackRate', rate);
         }
 
         function onYouTubeIframeAPIReady() {
@@ -75,16 +85,17 @@
                     onError: onError,
                     onReady: onReady,
                     onApiChange: onApiChange,
-                    onStateChange: onStateChange
+                    onStateChange: onStateChange,
+                    onPlaybackRateChange: onPlaybackRateChange,
                 }
             });
         }
 
-        function sendEvent(name, options = {}) {
+        function sendEvent(name, ...args) {
             if (window.parent != window.self) {
                 window.parent.postMessage(JSON.stringify({
                     name,
-                    options,
+                    args,
                 }), '*');
             }
         }
