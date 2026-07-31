@@ -15,18 +15,9 @@
     <script>
         var player;
 
-        function sendAction(name, options = {}) {
-            if (window.parent != window.self) {
-                window.parent.postMessage(JSON.stringify({
-                    name,
-                    options,
-                }), '*');
-            }
-        }
-
         function onReady() {
             console.log("onReady");
-            sendAction('ready');
+            sendEvent('ready');
         }
 
         function onError(e) {
@@ -38,33 +29,22 @@
             
             player.loadModule('captions');
             player.setOption('captions', 'track', {});
-            sendAction('propChanged', 'paused');
-            sendAction('propChanged', 'time');
-            sendAction('propChanged', 'duration');
-            sendAction('propChanged', 'buffering');
-            sendAction('propChanged', 'volume');
-            sendAction('propChanged', 'muted');
-            sendAction('propChanged', 'playbackSpeed');
-            sendAction('propChanged', 'subtitlesTracks');
-            sendAction('propChanged', 'selectedSubtitlesTrackId');
+            sendEvent('apiChanged');
         }
     
         function onStateChange(state) {
             console.log('onStateChange');
 
-            sendAction('propChanged', 'buffering');
             switch (state.data) {
                 case YT.PlayerState.ENDED: {
-                    onEnded();
+                    sendEvent('ended');
                     break;
                 }
                 case YT.PlayerState.CUED:
                 case YT.PlayerState.UNSTARTED:
                 case YT.PlayerState.PAUSED:
                 case YT.PlayerState.PLAYING: {
-                    sendAction('propChanged', 'paused');
-                    sendAction('propChanged', 'time');
-                    sendAction('propChanged', 'buffering');
+                    sendEvent('stateChanged');
                     break;
                 }
             }
@@ -98,13 +78,97 @@
             });
         }
 
+        function sendEvent(name, options = {}) {
+            if (window.parent != window.self) {
+                window.parent.postMessage(JSON.stringify({
+                    name,
+                    options,
+                }), '*');
+            }
+        }
+
+        function onMessage(message) {
+            console.log(message);
+            var name = message.name;
+            var args = message.args;
+
+            if (name === 'loadVideoById') {
+                var videoId = args[0];
+                var startSeconds = args[1];
+                player.loadVideoById({
+                    videoId: videoId,
+                    startSeconds: startSeconds,
+                });
+            }
+
+            if (name === 'cueVideoById') {
+                var videoId = args[0];
+                var startSeconds = args[1];
+                player.cueVideoById({
+                    videoId: videoId,
+                    startSeconds: startSeconds,
+                });
+            }
+
+            if (name === 'pauseVideo') {
+                player.pauseVideo();
+            }
+
+            if (name === 'playVideo') {
+                player.playVideo();
+            }
+
+            if (name === 'seekTo') {
+                var time = args[0];
+                player.seekTo(time);
+            }
+
+            if (name === 'mute') {
+                player.mute();
+            }
+
+            if (name === 'unMute') {
+                player.unMute();
+            }
+
+            if (name === 'setVolume') {
+                var volume = args[0];
+                player.setVolume(volume);
+            }
+
+            if (name === 'setPlaybackRate') {
+                var rate = args[0];
+                player.setPlaybackRate(rate);
+            }
+
+            if (name === 'stopVideo') {
+                player.stopVideo();
+            }
+
+            if (name === 'destroy') {
+                player.destroy();
+            }
+        }
+
+        window.addEventListener("message", (event) => {
+            console.log('CHILD');
+            console.log(event);
+            
+            try {
+                var message = JSON.parse(event.data);
+                onMessage(message);
+            } catch (e) {
+                console.error('Failed to parse message', e)
+            }
+        });
+
         function onAPILoaded() {
             console.log("onAPILoaded");
         }
 
         function onAPIError(e) {
             console.error("onAPIError", e);
-            sendAction('error');
+            sendEvent('error');
         }
 
         var apiScriptElement = document.createElement('script');
@@ -113,39 +177,5 @@
         apiScriptElement.onload = onAPILoaded;
         apiScriptElement.onerror = onAPIError;
         document.body.appendChild(apiScriptElement);
-
-        window.addEventListener("message", (event) => {
-            console.log('CHILD');
-            console.log(event);
-            
-            try {
-                var message = JSON.parse(event.data);
-                console.log(message);
-
-                if (message.name === 'loadVideoById') {
-                    player.loadVideoById({
-                        videoId: message.options.videoId,
-                        startSeconds: message.options.startSeconds,
-                    });
-                }
-
-                if (message.name === 'cueVideoById') {
-                    player.cueVideoById({
-                        videoId: message.options.videoId,
-                        startSeconds: message.options.startSeconds,
-                    });
-                }
-
-                if (message.name === 'stopVideo') {
-                    player.stopVideo();
-                }
-
-                if (message.name === 'destroy') {
-                    player.destroy();
-                }
-            } catch (e) {
-                console.error('Failed to parse message', e)
-            }
-        });
     </script>
 </html>
