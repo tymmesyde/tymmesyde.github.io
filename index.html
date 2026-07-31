@@ -36,9 +36,6 @@
         function onReady() {
             console.log("onReady");
             sendEvent('ready');
-
-            var ok = player.getOption('captions', 'tracklist');
-            console.log(ok);
         }
 
         function onError(e) {
@@ -51,8 +48,15 @@
             player.loadModule('captions');
             player.setOption('captions', 'track', {});
 
-            var ok = player.getOption('captions', 'tracklist');
-            console.log(ok);
+            var captions = player.getOption('captions', 'tracklist') || [];
+            var textTracks = captions.map((caption) => {
+                return {
+                    languageCode: track.languageCode,
+                    displayName: track.displayName,
+                };
+            });
+
+            sendEvent('textTracks', textTracks);
         }
     
         function onStateChange(state) {
@@ -179,6 +183,17 @@
             if (name === 'setPlaybackRate') {
                 var rate = args[0];
                 player.setPlaybackRate(rate);
+            }
+
+            if (name === 'setTextTrack') {
+                var languageCode = args[0];
+                if (typeof languageCode === 'string') {
+                    video.setOption('captions', 'track', {
+                        languageCode: languageCode
+                    });
+                } else {
+                    video.setOption('captions', 'track', {});
+                }
             }
 
             if (name === 'stopVideo') {
