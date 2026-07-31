@@ -24,7 +24,7 @@
                 if (!player) return;
 
                 var time = player.getCurrentTime();
-                sendEvent('time', time);
+                sendEvent('time', time * 1000);
             }, 500);
         }
 
@@ -65,7 +65,7 @@
                 case YT.PlayerState.PAUSED:
                 case YT.PlayerState.PLAYING: {
                     var duration = player.getDuration();
-                    sendEvent('duration', duration);
+                    sendEvent('duration', duration * 1000);
 
                     sendEvent('buffering', false);
                     sendEvent('paused', state.data !== YT.PlayerState.PLAYING);
