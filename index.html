@@ -49,7 +49,7 @@
             player.setOption('captions', 'track', {});
 
             var captions = player.getOption('captions', 'tracklist') || [];
-            var textTracks = captions.map((caption) => {
+            var textTracks = captions.map(function (caption) {
                 return {
                     languageCode: caption.languageCode,
                     displayName: caption.displayName,
@@ -188,11 +188,11 @@
             if (name === 'setTextTrack') {
                 var languageCode = args[0];
                 if (typeof languageCode === 'string') {
-                    video.setOption('captions', 'track', {
+                    player.setOption('captions', 'track', {
                         languageCode: languageCode
                     });
                 } else {
-                    video.setOption('captions', 'track', {});
+                    player.setOption('captions', 'track', {});
                 }
             }
 
