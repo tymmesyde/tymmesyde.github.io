@@ -34,12 +34,13 @@
         }
 
         function onReady() {
-            console.log("onReady");
+            console.log('onReady');
             sendEvent('ready');
         }
 
-        function onError(e) {
-            console.error("onError", e);
+        function onError(error) {
+            console.error('onError', error.data);
+            sendEvent('error', error.data);
         }
 
         function onApiChange() {
@@ -140,7 +141,7 @@
                 var videoId = args[0];
                 var startSeconds = args[1];
                 player.loadVideoById({
-                    videoId: videoId,
+                    videoId: 'asdasdasdasdasd',
                     startSeconds: startSeconds,
                 });
             }
@@ -149,7 +150,7 @@
                 var videoId = args[0];
                 var startSeconds = args[1];
                 player.cueVideoById({
-                    videoId: videoId,
+                    videoId: 'asdasdasdasdas',
                     startSeconds: startSeconds,
                 });
             }
@@ -165,19 +166,6 @@
             if (name === 'seekTo') {
                 var time = args[0];
                 player.seekTo(time);
-            }
-
-            if (name === 'mute') {
-                player.mute();
-            }
-
-            if (name === 'unMute') {
-                player.unMute();
-            }
-
-            if (name === 'setVolume') {
-                var volume = args[0];
-                player.setVolume(volume);
             }
 
             if (name === 'setPlaybackRate') {
@@ -207,7 +195,7 @@
             }
         }
 
-        window.addEventListener("message", (event) => {
+        window.addEventListener('message', (event) => {
             if (event.origin === YOUTUBE_ORIGIN) return;
 
             try {
@@ -219,12 +207,12 @@
         });
 
         function onAPILoaded() {
-            console.log("onAPILoaded");
+            console.log('onAPILoaded');
         }
 
-        function onAPIError(e) {
-            console.error("onAPIError", e);
-            sendEvent('error');
+        function onAPIError(error) {
+            console.error('onAPIError', error);
+            sendEvent('error', 0);
         }
 
         var apiScriptElement = document.createElement('script');
